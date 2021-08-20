@@ -10,7 +10,7 @@ import { NumberSystemConverterService } from '../number-system-converter.service
 export class Tab1Page {
 
     private _givenNumber: string = "192"
-    private _wantedNumber: string = ""
+    public _wantedNumber: string = ""
     private _bases: string[] = ["2", "8", "10", "16"]
     private _givenBase: string = "10"
     private _wantedBase: string = "2"
@@ -51,6 +51,10 @@ export class Tab1Page {
 
     get wantedNumber(): string {
         return this._wantedNumber
+    }
+
+    set wantedNummer(number: string) {
+        this._wantedNumber = number
     }
 
     get steps(): string {
