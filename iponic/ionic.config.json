@@ -1,0 +1,7 @@
+{
+  "name": "iponic",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
