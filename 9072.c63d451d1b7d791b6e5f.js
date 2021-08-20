@@ -1,0 +1,1 @@
+(self.webpackChunkiponic=self.webpackChunkiponic||[]).push([[9072],{9072:(o,s,c)=>{"use strict";c.r(s),c.d(s,{ion_text:()=>l});var r=c(3150),t=c(7585),n=c(1269);const l=class{constructor(o){(0,r.r)(this,o)}render(){const o=(0,t.b)(this);return(0,r.h)(r.H,{class:(0,n.c)(this.color,{[o]:!0})},(0,r.h)("slot",null))}};l.style=":host(.ion-color){color:var(--ion-color-base)}"}}]);
