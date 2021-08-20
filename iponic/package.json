@@ -6,7 +6,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "gh-pages": "ng build --outputHashing=all --base-href 'https://nolleschorsch.github.io/iponic/' --prod && npx ngh --dir=www/",
+    "gh-pages": "ng build --outputHashing=all --base-href 'https://nolleschorsch.github.io/iponic/' --configuration production && npx angular-cli-ghpages --dir=www",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
