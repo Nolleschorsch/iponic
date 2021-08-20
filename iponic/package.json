@@ -6,8 +6,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "gh-pages": "ng build --base-href 'https://nolleschorsch.github.io/iponic/' --configuration production && npx angular-cli-ghpages --dir=www --no-silent",
-    "ffs": "ng deploy --base-href '/iponic/'",
+    "ffs": "ng deploy --no-silent --base-href=/iponic/",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",

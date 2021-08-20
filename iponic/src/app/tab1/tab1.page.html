@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
     <ion-toolbar>
         <ion-title>
-            Tab 1
+            Numbersystem Converter
         </ion-title>
     </ion-toolbar>
 </ion-header>
@@ -28,7 +28,7 @@
             <ion-select-option *ngFor="let base of bases" value="{{base}}">{{base}}</ion-select-option>
         </ion-select>
     </ion-item>
-    <ion-button (click)="convert()">click</ion-button>
+    <ion-button (click)="convert()">Convert</ion-button>
     <ion-input [(ngModel)]="wantedNumber" disabled></ion-input>
     <ion-textarea [(ngModel)]="steps" rows="{{stepCount}}"></ion-textarea>
 </ion-content>
