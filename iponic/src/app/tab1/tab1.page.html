@@ -45,8 +45,8 @@
         <ion-row>
             <ion-col *ngIf="wantedNumber" class="ion-col-center">
                 <ion-label>The converted number is:</ion-label>
-                <ion-input [(ngModel)]="wantedNumber" disabled #wantedNumberEl></ion-input>
-                <ion-button (click)="copyToClipboard(wantedNumberEl)">copy to clipboard</ion-button>
+                <ion-input [(ngModel)]="wantedNumber" disabled></ion-input>
+                <ion-button (click)="copyToClipboard()">copy to clipboard</ion-button>
             </ion-col>
         </ion-row>
         <ion-row class="ion-justify-content-around">
