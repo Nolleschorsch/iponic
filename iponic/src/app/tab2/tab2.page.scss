@@ -1,0 +1,19 @@
+.center {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.foo {
+    border: solid red 1px;
+}
+
+.bar {
+    border: solid green 1px;
+}
+
+.ion-col-center {
+    text-align: center;
+}
