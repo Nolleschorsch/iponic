@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
+import { ToastController } from '@ionic/angular';
 import { NumberSystemConverterService } from '../number-system-converter.service';
-
 
 @Component({
     selector: 'app-tab1',
@@ -18,6 +18,7 @@ export class Tab1Page {
     private _stepCount: number = 0
 
     constructor(
+        public toastController: ToastController,
         private converterService: NumberSystemConverterService
     ) { }
 
@@ -85,6 +86,30 @@ export class Tab1Page {
         this._wantedNumber = wantedNumber
         this._steps = steps
         this._stepCount = [...steps].reduce((a, v) => v === "\n" ? a + 1 : a, 0) + 2
+    }
+
+    copyToClipboard() {
+        if (!navigator.clipboard) {
+            this.presentToast("Not supported on your system.")
+            return;
+        }
+        navigator.clipboard.writeText(this._wantedNumber).then(
+            () => {
+                this.presentToast("Copied to clipboard.")
+            },
+            (err) => {
+                this.presentToast("Something went wrong.")
+                console.log({err})
+            }
+        )
+    }
+
+    async presentToast(message) {
+        const toast = await this.toastController.create({
+            message: message,
+            duration: 2000
+        });
+        toast.present();
     }
 
 }
