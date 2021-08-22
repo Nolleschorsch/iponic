@@ -181,6 +181,8 @@ export class Tab2Page {
     }
 
     calculateSubnets() {
-        this._subnets = this.fooService.getSubnetworks(this.addrOctets, ["11111111", "11111111", "11111111", "10000000"], ["11111111", "11111111", "11111111", "00000000"])
+        const subnetmask = this.fooService.getSubnetmaskFromCidr(this.subCidr)
+        const highermask = this.fooService.getSubnetmaskFromCidr(this.cidr)
+        this._subnets = this.fooService.getSubnetworks(this.addrOctets, subnetmask, highermask)
     }
 }

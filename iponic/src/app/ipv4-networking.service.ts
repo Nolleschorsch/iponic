@@ -9,7 +9,7 @@ export class Ipv4NetworkingService {
 
     constructor(private converterService: NumberSystemConverterService) { }
 
-    getNetworkIncrementBig = (subnetOctets) => {
+    getNetworkIncrement = (subnetOctets: string[]) => {
         let base = new big.BigInteger("2");
         return base.pow(subnetOctets.filter(item => item === "0").length.toString())
     }
@@ -36,120 +36,58 @@ export class Ipv4NetworkingService {
         return binary;
     }
 
-    getSubnetworks(addr: string[], subnetmask: string[], fuckmask: string[]) {
+    getIPv4BinaryFromDezimal(dezimal: string) {
+        return this.addLeadingZeroes(this.converterService.dezimalToBinary(dezimal), 32)
+    }
 
-        const totalSize: number = 32
+    getIPv4fromBinary(binary: string) {
         const regExp = new RegExp(/.{1,8}/, 'g')
+        return binary.match(regExp).map(x => this.converterService.binaryToDezimal(x)).join('.')
+    }
 
-        const networkIncrement = this.getNetworkIncrementBig(subnetmask.join('').split('')) // blyat
+    getSubnetmaskFromCidr(cidr: string) {
+        const j = parseInt(cidr)
+        const regExp = new RegExp(/.{1,8}/, 'g')
+        const mask = [...Array(32).keys()].map((v, i) => i < j ? "1" : "0").join('')
+        return mask.match(regExp)
+    }
+
+    getSubnetworks(addr: string[], subnetmask: string[], highermask: string[]) {
+
+        const networkIncrement = this.getNetworkIncrement(subnetmask.join('').split('')) // blyat
         const baseNetwork: string[] = addr.map((item,i) => this.converterService.booleanANDBinary(item, subnetmask[i]))
-        //console.log({baseNetwork}, networkIncrement.toString())
-        const firstSubnet = [...baseNetwork]
+        const firstSubnetDezimal = new big.BigInteger(this.converterService.binaryToDezimal([...baseNetwork].join('')))
 
-        let bla = 0
+        const subnetCount = this.getSubnetCountStupid(subnetmask, highermask)
         let subnets = []
-        let z = '.'
-        let blaAdd = new big.BigInteger(bla.toString());
+        let networkAdd = new big.BigInteger("0");
     
-        for (var i = 0; i < this.getSubnetCountStupid(subnetmask, fuckmask); i++) {
-            // FML!!!
-            let networkID
-            let broadcast
-            let rangeStart
-            let rangeEnd
+
+        for (var i = 0; i < subnetCount; i++) {
     
             let addRange = new big.BigInteger("1");
             let subRange = new big.BigInteger("-1");
             let addBroadcast = networkIncrement.add(subRange);
-    
-            let networkDezimalBig = new big.BigInteger(this.converterService.binaryToDezimal([...firstSubnet].join('')))
-            networkDezimalBig = networkDezimalBig.add(blaAdd)
-            //let networkDezimalBig = this.converterService.binaryToDezimal([...firstSubnet].join('')).add(blaAdd)
-            let broadcastDezimalBig = networkDezimalBig.add(addBroadcast);
-            let rangeStartDezimalBig = networkDezimalBig.add(addRange);
-            let rangeEndDezimalBig = broadcastDezimalBig.add(subRange);
-    
-            let networkBinaryBig = this.addLeadingZeroes(this.converterService.dezimalToBinary(networkDezimalBig.toString()), totalSize)
-            let broadcastBinaryBig = this.addLeadingZeroes(this.converterService.dezimalToBinary(broadcastDezimalBig.toString()), totalSize)
-            let rangeStartBinaryBig = this.addLeadingZeroes(this.converterService.dezimalToBinary(rangeStartDezimalBig.toString()), totalSize)
-            let rangeEndBinaryBig = this.addLeadingZeroes(this.converterService.dezimalToBinary(rangeEndDezimalBig.toString()), totalSize)
 
+            let networkDezimal = firstSubnetDezimal.add(networkAdd)
+            let broadcastDezimal = networkDezimal.add(addBroadcast);
+            let rangeStartDezimal= networkDezimal.add(addRange);
+            let rangeEndDezimal = broadcastDezimal.add(subRange);
     
-            networkID = networkBinaryBig.match(regExp).map(x => this.converterService.binaryToDezimal(x)).join(z)
-            broadcast = broadcastBinaryBig.match(regExp).map(x => this.converterService.binaryToDezimal(x)).join(z)
-            rangeStart = rangeStartBinaryBig.match(regExp).map(x => this.converterService.binaryToDezimal(x)).join(z)
-            rangeEnd = rangeEndBinaryBig.match(regExp).map(x => this.converterService.binaryToDezimal(x)).join(z)
-    
-    
+            let [networkBinary, broadcastBinary, rangeStartBinary, rangeEndBinary] = [networkDezimal, broadcastDezimal, rangeStartDezimal, rangeEndDezimal].map(
+                x => this.getIPv4BinaryFromDezimal(x.toString())
+            )
+
+            let [networkID, broadcast, rangeStart, rangeEnd] = [networkBinary, broadcastBinary, rangeStartBinary, rangeEndBinary].map(
+                x => this.getIPv4fromBinary(x)
+            )
+
             let reservedHosts = new big.BigInteger("-2")
     
             subnets.push({ networkID, networkRange: [rangeStart, rangeEnd, networkIncrement.add(reservedHosts).toString()], broadcast })
-            blaAdd = blaAdd.add(networkIncrement)
+            networkAdd = networkAdd.add(networkIncrement)
         }
 
         return subnets
     }
-
-    /* export const getNetworkIDs = (addr, subnetMask, fuckMask, ipV6) => {
-
-        let totalSize = ipV6 ? 128 : 32
-        let regExp = ipV6 ? new RegExp(/.{1,16}/, 'g') : new RegExp(/.{1,8}/, 'g')
-    
-        const networkIncrement = getNetworkIncrementBig(subnetMask.flat().join('').split('')) // blyat
-        const baseNetwork = addr.map((octet, i) => booleanANDBinary(octet, subnetMask[i]))
-    
-        const firstSubnet = [...baseNetwork]
-    
-    
-        let bla = 0
-        let subnets = []
-        let z = ipV6 ? ':' : '.'
-        let blaAdd = new bigdecimal.BigInteger(bla.toString());
-    
-        for (var i = 0; i < getSubnetCountStupid(subnetMask, fuckMask); i++) {
-            // FML!!!
-            let networkID
-            let broadcast
-            let rangeStart
-            let rangeEnd
-    
-            let addRange = new bigdecimal.BigInteger("1");
-            let subRange = new bigdecimal.BigInteger("-1");
-            let addBroadcast = networkIncrement.add(subRange);
-    
-            let networkDezimalBig = binaryToDezimalBig([...firstSubnet].join('')).add(blaAdd)
-            let broadcastDezimalBig = networkDezimalBig.add(addBroadcast);
-            let rangeStartDezimalBig = networkDezimalBig.add(addRange);
-            let rangeEndDezimalBig = broadcastDezimalBig.add(subRange);
-    
-            let networkBinaryBig = addLeadingZeroes(dezimalToBinaryBig(networkDezimalBig.toString()), totalSize)
-            let broadcastBinaryBig = addLeadingZeroes(dezimalToBinaryBig(broadcastDezimalBig.toString()), totalSize)
-            let rangeStartBinaryBig = addLeadingZeroes(dezimalToBinaryBig(rangeStartDezimalBig.toString()), totalSize)
-            let rangeEndBinaryBig = addLeadingZeroes(dezimalToBinaryBig(rangeEndDezimalBig.toString()), totalSize)
-    
-            if (ipV6) {
-    
-                networkID = networkBinaryBig.match(regExp).map(x => addLeadingZeroes(binaryToHexBig(x), 4)).join(z)
-                broadcast = broadcastBinaryBig.match(regExp).map(x => addLeadingZeroes(binaryToHexBig(x), 4)).join(z)
-                rangeStart = rangeStartBinaryBig.match(regExp).map(x => addLeadingZeroes(binaryToHexBig(x), 4)).join(z)
-                rangeEnd = rangeEndBinaryBig.match(regExp).map(x => addLeadingZeroes(binaryToHexBig(x), 4)).join(z)
-    
-    
-            }
-            else {
-    
-                networkID = networkBinaryBig.match(regExp).map(x => binaryToDezimalBig(x)).join(z)
-                broadcast = broadcastBinaryBig.match(regExp).map(x => binaryToDezimalBig(x)).join(z)
-                rangeStart = rangeStartBinaryBig.match(regExp).map(x => binaryToDezimalBig(x)).join(z)
-                rangeEnd = rangeEndBinaryBig.match(regExp).map(x => binaryToDezimalBig(x)).join(z)
-    
-            }
-    
-            let reservedHosts = new bigdecimal.BigInteger("-2")
-    
-            subnets.push({ networkID, networkRange: [rangeStart, rangeEnd, networkIncrement.add(reservedHosts).toString()], broadcast })
-            blaAdd = blaAdd.add(networkIncrement)
-        }
-    
-        return subnets */
 }

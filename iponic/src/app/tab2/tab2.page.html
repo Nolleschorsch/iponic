@@ -55,7 +55,7 @@
                     (keypress)="_keyPressSubmaskBinary($event, i)" placeholder="enter subnetmask"></ion-input>
             </ion-col>
             <ion-col size="12" size-sm="2">
-                <ion-select [(ngModel)]="subcidr">
+                <ion-select [(ngModel)]="subCidr">
                     <ion-select-option *ngFor="let c of subCidrRange" value="{{c}}">/{{c}}</ion-select-option>
                 </ion-select>
             </ion-col>
@@ -72,8 +72,12 @@
                 <ion-button (click)="calculateSubnets()">GO</ion-button>
             </ion-col>
         </ion-row>
-        <ion-row>
-            <ion-col *ngFor="let subnet of subnets">{{subnet.broadcast}}</ion-col>
+        <ion-row *ngFor="let subnet of subnets">
+            <ion-col>{{subnet.networkID}}</ion-col>
+            <ion-col>
+                {{subnet.networkRange[0]}} - {{subnet.networkRange[1]}} ({{subnet.networkRange[2]}})
+            </ion-col>
+            <ion-col>{{subnet.broadcast}}</ion-col>
         </ion-row>
 
     </ion-grid>
