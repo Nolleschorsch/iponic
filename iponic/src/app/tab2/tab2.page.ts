@@ -154,30 +154,31 @@ export class Tab2Page {
         return validDigits
     }
 
-    setAddrDezimal(event: CustomEvent, index: number) {
-        const value = event.detail.value === "" ? "0" : event.detail.value
+    setAddrDezimal(event, index: number) {
+        const value = event.target.value === "" ? "0" : event.target.value
         this._addrDezimals[index] = value
     }
 
-    setAddrOctet(event: CustomEvent, index: number) {
-        const value = event.detail.value === "" ? "0" : event.detail.value
+    setAddrOctet(event, index: number) {
+        const value = event.target.value === "" ? "0" : event.target.value
         this._addrOctets[index] = value
     }
 
-    setSubmaskDezimal(event: CustomEvent, index: number) {
-        const value = event.detail.value === "" ? "0" : event.detail.value
+    setSubmaskDezimal(event, index: number) {
+        const value = event.target.value === "" ? "0" : event.target.value
         this._submaskDezimals[index] = value
         this._submaskOctets[index] = this.converterService.dezimalToBinary(value)
     }
 
-    setSubmaskOctet(event: CustomEvent, index: number) {
-        const value = event.detail.value === "" ? "0" : event.detail.value
+    setSubmaskOctet(event, index: number) {
+        const value = event.target.value === "" ? "0" : event.target.value
         this._submaskOctets[index] = value
         this._submaskDezimals[index] = this.converterService.binaryToDezimal(value)
     }
 
-    setSubnetCount(event: CustomEvent) {
-        this._subnetCount = parseInt(event.detail.value)
+    setSubnetCount(event) {
+        this._subnetCount = parseInt(event.target.value)
+        //this._subnetCount = parseInt(event.target.value)
     }
 
     calculateSubnets() {
