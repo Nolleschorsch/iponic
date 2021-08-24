@@ -56,7 +56,7 @@
             </ion-col>
             <ion-col size="12" size-sm="2">
                 <ion-select [(ngModel)]="subCidr">
-                    <ion-select-option *ngFor="let c of subCidrRange" value="{{c}}">/{{c}}</ion-select-option>
+                    <ion-select-option *ngFor="let c of subCidrRange.slice(cidr)" value="{{c}}">/{{c}}</ion-select-option>
                 </ion-select>
             </ion-col>
         </ion-row>
@@ -72,7 +72,8 @@
                 <ion-button (click)="calculateSubnets()">GO</ion-button>
             </ion-col>
         </ion-row>
-        <ion-row *ngFor="let subnet of subnets">
+        <ion-row *ngFor="let subnet of subnets; index as i" [ngClass]="{'unused-network-row': i >= subnetCount}">
+            <ion-col size="12" size-sm="1"></ion-col>
             <ion-col>{{subnet.networkID}}</ion-col>
             <ion-col>
                 {{subnet.networkRange[0]}} - {{subnet.networkRange[1]}} ({{subnet.networkRange[2]}})

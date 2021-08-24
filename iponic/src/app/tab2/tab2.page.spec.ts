@@ -266,4 +266,23 @@ describe('Tab2Page', () => {
         component.calculateSubnets()
         expect(component.subnets).toEqual(expected)
     })
+
+    it('calculateSubnets presents toast on invalid subnet', () => {
+        spyOn(component, 'presentToast')
+        component.setSubnetCount({target: {value: "99999"}})
+        component.calculateSubnets()
+        expect(component.presentToast).toHaveBeenCalledWith("Not possible!")
+    })
+
+    it('presentToast', (done) => {
+        //let wtf = new Promise(() => <HTMLIonToastElement>{})
+        spyOn(component.toastController, 'create')
+            .and.returnValue(new Promise(() => <HTMLIonToastElement>{}))
+        
+        component.presentToast("foo")
+        expect(component.toastController.create)
+                .toHaveBeenCalledWith({message: "foo", duration: 2000})
+        done()
+
+    });
 });
