@@ -42,6 +42,35 @@ describe('Ipv4NetworkingService', () => {
         expect(service.getIPv4fromBinary("00000000000000000000000001000000")).toEqual("0.0.0.64")
     })
 
+    it('getSubnetmaskFromCidr returns expected value', () => {
+        let values = ["32", "26", "22"]
+        let expected = [
+            ["11111111", "11111111", "11111111", "11111111"],
+            ["11111111", "11111111", "11111111", "11000000"],
+            ["11111111", "11111111", "11111100", "00000000"]
+        ]
+        values.forEach((v,i) => expect(service.getSubnetmaskFromCidr(v)).toEqual(expected[i]))
+    })
+
+    it('getSubnetmaskFromSubnetCount returns expected value', () => {
+        let values = [
+            ["1", "24"],
+            ["5", "24"],
+            ["9", "22"],
+            ["4", "32"]
+        ]
+        let expected = [
+            service.getSubnetmaskFromCidr("24"),
+            service.getSubnetmaskFromCidr("27"),
+            service.getSubnetmaskFromCidr("26"),
+            false
+        ]
+        values.forEach((v,i) => {
+            let [number, cidr] = v
+            expect(service.getSubnetmaskFromSubnetCount(parseInt(number), cidr)).toEqual(expected[i])
+        })
+    })
+
     it('getSubnetworks returns expected value', () => {
         let addr = ["11000000", "10101000", "00000001", "00000000"]
         let subnetmask1 = ["11111111", "11111111", "11111111", "00000000"]

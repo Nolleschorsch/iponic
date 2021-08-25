@@ -52,6 +52,30 @@ export class Ipv4NetworkingService {
         return mask.match(regExp)
     }
 
+    getSubnetmaskFromSubnetCount(subnetCount: number, cidr: string) {
+        //return "11111111111111111111111110000000"
+        const highermask = this.getSubnetmaskFromCidr(cidr)
+        let requiredBits = 0
+        while (Math.pow(2, requiredBits) < subnetCount) {
+            requiredBits++
+        }
+
+        const subnetBits = requiredBits + parseInt(cidr)
+
+        /* if (requiredBits >= 32 - parseInt(cidr)) { */
+        if (subnetBits >= 32) {
+            console.log("not possible!")
+            return false
+        }
+
+        return this.getSubnetmaskFromCidr(subnetBits.toString())
+
+        /* console.log(`you need ${requiredBits} bits to form ${subnetCount} subnets`)
+
+
+        return ["11111111", "11111111", "11111111", "10000000"] */
+    }
+
     getSubnetworks(addr: string[], subnetmask: string[], highermask: string[]) {
 
         const networkIncrement = this.getNetworkIncrement(subnetmask.join('').split('')) // blyat

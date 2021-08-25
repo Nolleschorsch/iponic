@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ToastController } from '@ionic/angular';
 import { Ipv4NetworkingService } from '../ipv4-networking.service';
 import { NumberSystemConverterService } from "../number-system-converter.service"
 
@@ -22,7 +23,10 @@ export class Tab2Page {
     public cidrRange: number[] = [...Array(33).keys()].map((v, i) => i)
     public subCidrRange: number[] = [...Array(33).keys()].map((v, i) => i)
 
-    constructor(private converterService: NumberSystemConverterService, private fooService: Ipv4NetworkingService) { }
+    constructor(
+        private converterService: NumberSystemConverterService,
+        private fooService: Ipv4NetworkingService,
+        public toastController: ToastController) { }
 
     get showBinary(): boolean {
         return this._showBinary
@@ -50,6 +54,8 @@ export class Tab2Page {
 
     set subCidr(subCidr: string) {
         this._subCidr = subCidr
+        let bits = parseInt(subCidr) - parseInt(this._cidr)
+        this._subnetCount = Math.pow(2, bits)
     }
 
     get useSubnetmask(): boolean {
@@ -154,35 +160,53 @@ export class Tab2Page {
         return validDigits
     }
 
-    setAddrDezimal(event: CustomEvent, index: number) {
-        const value = event.detail.value === "" ? "0" : event.detail.value
+    setAddrDezimal(event, index: number) {
+        const value = event.target.value === "" ? "0" : event.target.value
         this._addrDezimals[index] = value
     }
 
-    setAddrOctet(event: CustomEvent, index: number) {
-        const value = event.detail.value === "" ? "0" : event.detail.value
+    setAddrOctet(event, index: number) {
+        const value = event.target.value === "" ? "0" : event.target.value
         this._addrOctets[index] = value
     }
 
-    setSubmaskDezimal(event: CustomEvent, index: number) {
-        const value = event.detail.value === "" ? "0" : event.detail.value
+    setSubmaskDezimal(event, index: number) {
+        const value = event.target.value === "" ? "0" : event.target.value
         this._submaskDezimals[index] = value
         this._submaskOctets[index] = this.converterService.dezimalToBinary(value)
     }
 
-    setSubmaskOctet(event: CustomEvent, index: number) {
-        const value = event.detail.value === "" ? "0" : event.detail.value
+    setSubmaskOctet(event, index: number) {
+        const value = event.target.value === "" ? "0" : event.target.value
         this._submaskOctets[index] = value
         this._submaskDezimals[index] = this.converterService.binaryToDezimal(value)
     }
 
-    setSubnetCount(event: CustomEvent) {
-        this._subnetCount = parseInt(event.detail.value)
+    setSubnetCount(event) {
+        this._subnetCount = parseInt(event.target.value)
+        //this._subnetCount = parseInt(event.target.value)
     }
 
     calculateSubnets() {
-        const subnetmask = this.fooService.getSubnetmaskFromCidr(this.subCidr)
+        const subnetmask = this.useSubnetmask
+            ? this.fooService.getSubnetmaskFromCidr(this.subCidr)
+            : this.fooService.getSubnetmaskFromSubnetCount(this.subnetCount, this.cidr)
+        console.log(subnetmask, "wtf")
         const highermask = this.fooService.getSubnetmaskFromCidr(this.cidr)
-        this._subnets = this.fooService.getSubnetworks(this.addrOctets, subnetmask, highermask)
+        if (subnetmask) {
+            this._subnets = this.fooService.getSubnetworks(this.addrOctets, subnetmask, highermask)
+        }
+        else {
+            this.presentToast("Not possible!")
+        }
+        //this._subnets = this.fooService.getSubnetworks(this.addrOctets, subnetmask, highermask)
+    }
+
+    async presentToast(message) {
+        const toast = await this.toastController.create({
+            message: message,
+            duration: 2000
+        });
+        toast.present();
     }
 }

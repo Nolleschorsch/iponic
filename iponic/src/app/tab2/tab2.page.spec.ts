@@ -141,7 +141,7 @@ describe('Tab2Page', () => {
     })
 
     it('_keyPressBinary allows valid input', () => {
-        const event1 = new CustomEvent("", { detail: { value: "101" } })
+        const event1 = {target: { value: "101" }}
         component.setAddrOctet(event1, 0)
         const event2 = {key: "1", preventDefault: () => {}}
         expect(component._keyPressBinary(event2, 0)).toEqual(true)
@@ -156,7 +156,7 @@ describe('Tab2Page', () => {
     })
 
     it('_keyPressSubmaskBinary allows valid input', () => {
-        const event1 = new CustomEvent("", { detail: { value: "101" } })
+        const event1 = {target: { value: "101" }}
         component.setSubmaskOctet(event1, 0)
         const event2 = {key: "1", preventDefault: () => {}}
         expect(component._keyPressSubmaskBinary(event2, 0)).toEqual(true)
@@ -181,7 +181,7 @@ describe('Tab2Page', () => {
     })
 
     it('setAddrDezimal sets expected value', () => {
-        const event = new CustomEvent("", { detail: { value: "42" } })
+        const event = {target: { value: "42" } }
         const index = 0
         component.setAddrDezimal(event, index)
         expect(component.addrDezimals[index]).toEqual("42")
@@ -191,13 +191,13 @@ describe('Tab2Page', () => {
     })
 
     it('setAddrDezimal resets to "0" if input empty', () => {
-        const event = new CustomEvent("", {detail: {value: ""}})
+        const event = {target: {value: ""}}
         component.setAddrDezimal(event, 0)
         expect(component.addrDezimals[0]).toEqual("0")
     })
 
     it('setAddrOctet sets expected value', () => {
-        const event = new CustomEvent("", { detail: { value: "101" } })
+        const event = {target: { value: "101" }}
         const index = 0
         component.setAddrOctet(event, index)
         expect(component.addrOctets[index]).toEqual("101")
@@ -207,13 +207,13 @@ describe('Tab2Page', () => {
     })
 
     it('setAddrOctet resets to "0" if input empty', () => {
-        const event = new CustomEvent("", {detail: {value: ""}})
+        const event = {target: {value: ""}}
         component.setAddrOctet(event, 0)
         expect(component.addrOctets[0]).toEqual("0")
     })
 
     it('setSubmaskDezimal sets expected value', () => {
-        const event = new CustomEvent("", { detail: { value: "42" } })
+        const event = {target: { value: "42" } }
         const index = 0
         component.setSubmaskDezimal(event, index)
         expect(component.submaskDezimals[index]).toEqual("42")
@@ -223,13 +223,13 @@ describe('Tab2Page', () => {
     })
 
     it('setSubmaskDezimal resets to "0" if input empty', () => {
-        const event = new CustomEvent("", {detail: {value: ""}})
+        const event = {target: {value: ""}}
         component.setSubmaskDezimal(event, 0)
         expect(component.submaskDezimals[0]).toEqual("0")
     })
 
     it('setSubmaskOctet sets expected value', () => {
-        const event = new CustomEvent("", { detail: { value: "101" } })
+        const event = { target: { value: "101" } }
         const index = 0
         component.setSubmaskOctet(event, index)
         expect(component.submaskOctets[index]).toEqual("101")
@@ -239,14 +239,14 @@ describe('Tab2Page', () => {
     })
 
     it('setSubmaskOctet resets to "0" if input empty', () => {
-        const event = new CustomEvent("", {detail: {value: ""}})
+        const event = {target: {value: ""}}
         component.setSubmaskOctet(event, 0)
         expect(component.submaskOctets[0]).toEqual("0")
     })
 
     it('setSubnetCount sets expected value', () => {
         expect(component.subnetCount).toEqual(1)
-        const event = new CustomEvent("", {detail: {value: 10}})
+        const event = {target: {value: 10}}
         component.setSubnetCount(event)
         expect(component.subnetCount).toEqual(10)
     })
@@ -266,4 +266,23 @@ describe('Tab2Page', () => {
         component.calculateSubnets()
         expect(component.subnets).toEqual(expected)
     })
+
+    it('calculateSubnets presents toast on invalid subnet', () => {
+        spyOn(component, 'presentToast')
+        component.setSubnetCount({target: {value: "99999"}})
+        component.calculateSubnets()
+        expect(component.presentToast).toHaveBeenCalledWith("Not possible!")
+    })
+
+    it('presentToast', (done) => {
+        //let wtf = new Promise(() => <HTMLIonToastElement>{})
+        spyOn(component.toastController, 'create')
+            .and.returnValue(new Promise(() => <HTMLIonToastElement>{}))
+        
+        component.presentToast("foo")
+        expect(component.toastController.create)
+                .toHaveBeenCalledWith({message: "foo", duration: 2000})
+        done()
+
+    });
 });
