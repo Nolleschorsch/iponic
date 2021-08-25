@@ -20,8 +20,8 @@ export class Tab2Page {
     private _subnetCount: number = 1
     private _useSubnetmask: boolean = false
     private _subnets = [] //TODO: interface
-    public cidrRange: number[] = [...Array(33).keys()].map((v, i) => i)
-    public subCidrRange: number[] = [...Array(33).keys()].map((v, i) => i)
+    public cidrRange: string[] = [...Array(33).keys()].map((v, i) => i.toString())
+    public subCidrRange: string[] = [...Array(33).keys()].map((v, i) => i.toString())
 
     constructor(
         private converterService: NumberSystemConverterService,
@@ -41,6 +41,7 @@ export class Tab2Page {
     }
 
     get cidr(): string {
+        console.log(typeof this._cidr)
         return this._cidr
     }
 
@@ -80,6 +81,10 @@ export class Tab2Page {
 
     set subnets(subnets: any[]) {
         this._subnets = subnets
+    }
+
+    fuckNg(fuckProd: string) {
+        return parseInt(fuckProd)
     }
 
     trackByFn(index, item) {
@@ -189,10 +194,10 @@ export class Tab2Page {
 
     calculateSubnets() {
         const subnetmask = this.useSubnetmask
-            ? this.fooService.getSubnetmaskFromCidr(this.subCidr)
-            : this.fooService.getSubnetmaskFromSubnetCount(this.subnetCount, this.cidr)
+            ? this.fooService.getSubnetmaskFromCidr(this.subCidr.toString())
+            : this.fooService.getSubnetmaskFromSubnetCount(this.subnetCount, this.cidr.toString())
         console.log(subnetmask, "wtf")
-        const highermask = this.fooService.getSubnetmaskFromCidr(this.cidr)
+        const highermask = this.fooService.getSubnetmaskFromCidr(this.cidr.toString())
         if (subnetmask) {
             this._subnets = this.fooService.getSubnetworks(this.addrOctets, subnetmask, highermask)
         }
