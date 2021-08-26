@@ -41,7 +41,6 @@ export class Tab2Page {
     }
 
     get cidr(): string {
-        console.log(typeof this._cidr)
         return this._cidr
     }
 
@@ -173,14 +172,17 @@ export class Tab2Page {
     }
 
     setAddrDezimal(event, index: number) {
+        console.log("dafuq")
         const value = event.target.value === "" ? "0" : event.target.value
         this._addrDezimals[index] = value
+        this._addrOctets[index] = this.converterService.dezimalToBinary(value)
         this._subnets = []
     }
 
     setAddrOctet(event, index: number) {
         const value = event.target.value === "" ? "0" : event.target.value
         this._addrOctets[index] = value
+        this._addrDezimals[index] = this.converterService.binaryToDezimal(value)
         this._subnets = []
     }
 

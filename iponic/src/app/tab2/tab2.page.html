@@ -48,7 +48,7 @@
         <ion-row *ngIf="useSubnetmask;">
             <ion-col class="ion-col-center">
                 <ion-select [(ngModel)]="subCidr">
-                    <ion-select-option *ngFor="let c of subCidrRange.slice(cidr)" value="{{c}}">/{{c}}
+                    <ion-select-option *ngFor="let c of subCidrRange.slice(fuckNg(cidr))" value="{{c}}">/{{c}}
                     </ion-select-option>
                 </ion-select>
             </ion-col>
