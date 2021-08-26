@@ -3,25 +3,16 @@
         <ion-title>
             IPv4 Networking
         </ion-title>
+        <ion-button (click)="toggleShowBinary()" color="{{showBinary ? 'medium' : 'primary'}}">
+            <ion-icon name="{{showBinary ? 'eye-off-outline' : 'eye-outline'}}"></ion-icon>
+        </ion-button>
     </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-    <ion-header collapse="condense">
-        <ion-toolbar>
-            <ion-title size="large">IPv4 Networking</ion-title>
-        </ion-toolbar>
-    </ion-header>
-
     <ion-grid>
         <ion-row>
-            <ion-col size="12" size-sm="1">
-                <ion-button (click)="toggleShowBinary()" color="{{showBinary ? 'medium' : 'primary'}}">
-                    <ion-icon name="{{showBinary ? 'eye-off-outline' : 'eye-outline'}}"></ion-icon>
-                </ion-button>
-            </ion-col>
-
-            <ion-col *ngFor="let dezi of addrDezimals; index as i; trackBy: trackByFn" size="12" size-sm="2">
+            <ion-col *ngFor="let dezi of addrDezimals; index as i; trackBy: trackByFn" size="3" size-sm="2">
                 <ion-input value="{{dezi}}" (ionChange)="setAddrDezimal($event, i)"
                     (keypress)="_keyPressDezimal($event, i)"></ion-input>
                 <ion-input *ngIf="showBinary" value="{{addrOctets[i]}}" (ionChange)="setAddrOctet($event, i)"
@@ -29,42 +20,44 @@
             </ion-col>
 
             <ion-col size="12" size-sm="2">
-                <ion-select [(ngModel)]="cidr">
-                    <ion-select-option *ngFor="let c of cidrRange" value={{c}}>/{{c}}</ion-select-option>
+                <ion-select [(ngModel)]="cidr" class="center">
+                    <ion-select-option *ngFor="let c of cidrRange" value="{{c}}">/{{c}}</ion-select-option>
                 </ion-select>
             </ion-col>
         </ion-row>
         <ion-row class="ion-justify-content-center">
-            <ion-col size="6">
-                <h5 class="center">i have</h5>
+            <ion-col>
+                <h5 class="center">i have the</h5>
                 <ion-item>
-                    <div class="d-flex align-items-center center">
-                        <span [ngClass]="{'foo': useSubnetmask, 'bar': !useSubnetmask}">the number of subnets</span>
+                    <div class="center">
+                        <ion-chip color="{{ !useSubnetmask ? 'success' : 'dark' }}">
+                            <ion-span [ngClass]="{'inactive': useSubnetmask}">number of
+                                subnets</ion-span>
+                        </ion-chip>
+
                         <ion-toggle color="primary" (ionChange)="toggleUseSubnetmask()"></ion-toggle>
-                        <span [ngClass]="{'foo': !useSubnetmask, 'bar': useSubnetmask}">the subnet mask</span>
+                        <ion-chip color="{{ useSubnetmask ? 'success' : 'dark' }}">
+                            <ion-span [ngClass]="{'inactive': !useSubnetmask}">subnet mask
+                            </ion-span>
+                        </ion-chip>
+
                     </div>
                 </ion-item>
             </ion-col>
         </ion-row>
         <ion-row *ngIf="useSubnetmask;">
-            <ion-col size="12" size-sm="1"></ion-col>
-            <ion-col *ngFor="let submaskDezi of submaskDezimals; index as i; trackBy: trackByFn" size="12" size-sm="2">
-                <ion-input value="{{submaskDezi}}" (ionChange)="setSubmaskDezimal($event, i)"
-                    (keypress)="_keyPressSubmaskDezimal($event, i)" placeholder="enter subnetmask"></ion-input>
-                <ion-input *ngIf="showBinary" value="{{submaskOctets[i]}}" (ionChange)="setSubmaskOctet($event, i)"
-                    (keypress)="_keyPressSubmaskBinary($event, i)" placeholder="enter subnetmask"></ion-input>
-            </ion-col>
-            <ion-col size="12" size-sm="2">
+            <ion-col class="ion-col-center">
                 <ion-select [(ngModel)]="subCidr">
-                    <ion-select-option *ngFor="let c of subCidrRange.slice(fuckNg(cidr))" value={{c}}>/{{c}}</ion-select-option>
+                    <ion-select-option *ngFor="let c of subCidrRange.slice(cidr)" value="{{c}}">/{{c}}
+                    </ion-select-option>
                 </ion-select>
             </ion-col>
         </ion-row>
         <ion-row *ngIf="!useSubnetmask;">
             <ion-col class="ion-col-center">
                 <ion-label>Enter number of Subnets:</ion-label>
-                <ion-input value="{{subnetCount}}" (ionChange)="setSubnetCount($event)"
-                    (keypress)="_keyPressSubnetCount($event)" placeholder="Enter number of subnets"></ion-input>
+                <ion-input [(ngModel)]="subnetCount" (keypress)="_keyPressSubnetCount($event)"
+                    placeholder="Enter number of subnets"></ion-input>
             </ion-col>
         </ion-row>
         <ion-row>
@@ -72,14 +65,23 @@
                 <ion-button (click)="calculateSubnets()">GO</ion-button>
             </ion-col>
         </ion-row>
-        <ion-row *ngFor="let subnet of subnets; index as i" [ngClass]="{'unused-network-row': i >= subnetCount}">
-            <ion-col size="12" size-sm="1"></ion-col>
-            <ion-col>{{subnet.networkID}}</ion-col>
-            <ion-col>
-                {{subnet.networkRange[0]}} - {{subnet.networkRange[1]}} ({{subnet.networkRange[2]}})
-            </ion-col>
-            <ion-col>{{subnet.broadcast}}</ion-col>
+        <ion-row *ngIf="subnets.length > 0">
+            <ion-col size="12" class="ion-col-center">{{ submaskDezimals.join('.') }}</ion-col>
+            <ion-col size="12" *ngIf="showBinary" class="ion-col-center">{{ submaskOctets.join('.') }}</ion-col>
         </ion-row>
+        <ion-item *ngFor="let subnet of subnets; index as i"
+            [ngClass]="{'unused-network-row': i >= subnetCount, 'center': true}">
+            <ion-row class="center">
+                <ion-col size="12" class="center">Network {{i+1}}</ion-col>
+                <ion-col size="12" class="center">NetworkAddr: {{subnet.networkID}}</ion-col>
+                <ion-col size="12" class="center">First Host: {{subnet.networkRange[0]}}</ion-col>
+                <ion-col size="12" class="center">Last Host:{{subnet.networkRange[1]}}</ion-col>
+                <ion-col size="12" class="center">Hosts: {{subnet.networkRange[2]}}</ion-col>
+                <ion-col size="12" class="center">Broadcast: {{subnet.broadcast}}</ion-col>
+                <hr>
+            </ion-row>
+        </ion-item>
+
 
     </ion-grid>
 </ion-content>

@@ -64,7 +64,6 @@ export class Ipv4NetworkingService {
 
         /* if (requiredBits >= 32 - parseInt(cidr)) { */
         if (subnetBits >= 32) {
-            console.log("not possible!")
             return false
         }
 

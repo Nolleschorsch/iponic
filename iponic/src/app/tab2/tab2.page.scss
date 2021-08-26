@@ -6,12 +6,8 @@
     align-items: center;
 }
 
-.foo {
-    border: solid red 1px;
-}
-
-.bar {
-    border: solid green 1px;
+.inactive {
+    opacity: 50%;
 }
 
 .ion-col-center {

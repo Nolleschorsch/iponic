@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
 
@@ -11,7 +12,7 @@ describe('Tab2Page', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [Tab2Page],
-            imports: [IonicModule.forRoot(), ExploreContainerComponentModule]
+            imports: [IonicModule.forRoot(), ExploreContainerComponentModule, FormsModule]
         }).compileComponents();
 
         fixture = TestBed.createComponent(Tab2Page);
@@ -24,7 +25,7 @@ describe('Tab2Page', () => {
     });
 
     it('showBinary returns expected value', () => {
-        expect(component.showBinary).toEqual(true)
+        expect(component.showBinary).toEqual(false)
     })
 
     it('addrOctets returns expected value', () => {
@@ -69,6 +70,11 @@ describe('Tab2Page', () => {
         expect(component.subnetCount).toEqual(1)
     })
 
+    it('subnetCount sets expected value', () => {
+        component.subnetCount = 8
+        expect(component.subnetCount).toEqual(8)
+    })
+
     it('subnet returns expected value', () => {
         expect(component.subnets).toEqual([])
     })
@@ -100,9 +106,9 @@ describe('Tab2Page', () => {
 
     it('toggleShowBinary toggles showBinary', () => {
         component.toggleShowBinary()
-        expect(component.showBinary).toEqual(false)
-        component.toggleShowBinary()
         expect(component.showBinary).toEqual(true)
+        component.toggleShowBinary()
+        expect(component.showBinary).toEqual(false)
     })
 
     it('toggleUseSubnetmask toggles _useSubnetmask', () => {
@@ -244,12 +250,12 @@ describe('Tab2Page', () => {
         expect(component.submaskOctets[0]).toEqual("0")
     })
 
-    it('setSubnetCount sets expected value', () => {
+    /* it('setSubnetCount sets expected value', () => {
         expect(component.subnetCount).toEqual(1)
         const event = {target: {value: 10}}
         component.setSubnetCount(event)
         expect(component.subnetCount).toEqual(10)
-    })
+    }) */
 
     it('calculateSubnets sets expected value', () => {
         let expected = [
@@ -267,15 +273,33 @@ describe('Tab2Page', () => {
         expect(component.subnets).toEqual(expected)
     })
 
+    it('calculateSubnets sets expected value useSubnetmask true', () => {
+        let expected = [
+            {
+                networkID: "192.168.1.0",
+                networkRange: [
+                    "192.168.1.1",
+                    "192.168.1.254",
+                    "254"
+                ],
+                broadcast: "192.168.1.255"
+            }
+        ]
+        component.toggleUseSubnetmask()
+        component.subCidr = "24"
+        component.calculateSubnets()
+        expect(component.subnets).toEqual(expected)
+    })
+
     it('calculateSubnets presents toast on invalid subnet', () => {
         spyOn(component, 'presentToast')
-        component.setSubnetCount({target: {value: "99999"}})
+        //component.setSubnetCount({target: {value: "99999"}})
+        component.subnetCount = 99999
         component.calculateSubnets()
         expect(component.presentToast).toHaveBeenCalledWith("Not possible!")
     })
 
     it('presentToast', (done) => {
-        //let wtf = new Promise(() => <HTMLIonToastElement>{})
         spyOn(component.toastController, 'create')
             .and.returnValue(new Promise(() => <HTMLIonToastElement>{}))
         
