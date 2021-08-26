@@ -10,7 +10,7 @@ import { NumberSystemConverterService } from "../number-system-converter.service
 })
 export class Tab2Page {
 
-    private _showBinary: boolean = true
+    private _showBinary: boolean = false//true
     private _addrOctets: string[] = ["11000000", "10101000", "00000001", "00000000"]
     private _addrDezimals: string[] = ["192", "168", "1", "0"]
     private _cidr: string = "24"
@@ -46,6 +46,7 @@ export class Tab2Page {
 
     set cidr(cidr: string) {
         this._cidr = cidr
+        this._subnets = []
     }
 
     get subCidr(): string {
@@ -56,6 +57,7 @@ export class Tab2Page {
         this._subCidr = subCidr
         let bits = parseInt(subCidr) - parseInt(this._cidr)
         this._subnetCount = Math.pow(2, bits)
+        this._subnets = []
     }
 
     get useSubnetmask(): boolean {
@@ -72,6 +74,11 @@ export class Tab2Page {
 
     get subnetCount(): number {
         return this._subnetCount
+    }
+
+    set subnetCount(count: number) {
+        this._subnetCount = count
+        this._subnets = []
     }
 
     get subnets(): any[] {
@@ -163,11 +170,13 @@ export class Tab2Page {
     setAddrDezimal(event, index: number) {
         const value = event.target.value === "" ? "0" : event.target.value
         this._addrDezimals[index] = value
+        this._subnets = []
     }
 
     setAddrOctet(event, index: number) {
         const value = event.target.value === "" ? "0" : event.target.value
         this._addrOctets[index] = value
+        this._subnets = []
     }
 
     setSubmaskDezimal(event, index: number) {
@@ -182,24 +191,21 @@ export class Tab2Page {
         this._submaskDezimals[index] = this.converterService.binaryToDezimal(value)
     }
 
-    setSubnetCount(event) {
-        this._subnetCount = parseInt(event.target.value)
-        //this._subnetCount = parseInt(event.target.value)
-    }
-
     calculateSubnets() {
         const subnetmask = this.useSubnetmask
             ? this.fooService.getSubnetmaskFromCidr(this.subCidr)
             : this.fooService.getSubnetmaskFromSubnetCount(this.subnetCount, this.cidr)
-        console.log(subnetmask, "wtf")
+
         const highermask = this.fooService.getSubnetmaskFromCidr(this.cidr)
         if (subnetmask) {
             this._subnets = this.fooService.getSubnetworks(this.addrOctets, subnetmask, highermask)
+            this._subCidr = subnetmask.reduce((a,octet) => [...octet].reduce((x,v) => v === "1" ? x+1 : x, a),0).toString()
+            this._submaskDezimals = subnetmask.map(x => this.converterService.binaryToDezimal(x))
+            this._submaskOctets = subnetmask
         }
         else {
             this.presentToast("Not possible!")
         }
-        //this._subnets = this.fooService.getSubnetworks(this.addrOctets, subnetmask, highermask)
     }
 
     async presentToast(message) {
