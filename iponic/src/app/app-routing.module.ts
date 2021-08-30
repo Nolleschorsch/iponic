@@ -5,6 +5,10 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
+  },
+  {
+    path: 'minesweeper',
+    loadChildren: () => import('./minesweeper/minesweeper.module').then( m => m.MinesweeperPageModule)
   }
 ];
 @NgModule({

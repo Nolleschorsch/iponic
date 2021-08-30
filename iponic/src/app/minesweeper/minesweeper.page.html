@@ -1,0 +1,15 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>minesweeper</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+        <h5>blyat</h5>
+        <ion-button (click)="newGame()">New Game</ion-button>
+        <div *ngFor="let row of field" [ngClass]="fieldRow">
+            <!-- <div *ngFor="let cell of row" [ngClass]="{'cellStyleDefault': true}"  (click)="handleToggleCell(cell, [])">{{cell.mine ? "X" : "?"}}</div> -->
+            <div *ngFor="let cell of row" [ngClass]="getStyle(cell)"  (click)="handleToggleCell(cell, [], field)">{{cell.mine ? "X" : getAdjMines(cell)}}</div>
+        </div>
+
+</ion-content>
