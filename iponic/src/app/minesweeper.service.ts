@@ -10,74 +10,6 @@ interface Cell {
     toggled: boolean
 }
 
-
-export const cellStyleDefault = {
-    width: "50px",
-    height: "50px",
-    border: "solid black 1px",
-    textAlign: "center",
-    display: "table-cell",
-    verticalAlign: "middle",
-    backgroundColor: '#aaa',
-    color: "#aaa",
-    fontWeight: "bold",
-}
-
-export const cellStyleMine = Object.assign({}, cellStyleDefault, {
-    backgroundColor: "red"
-})
-
-export const cellStyle0 = Object.assign({}, cellStyleDefault, {
-    color: "#ccc",
-    backgroundColor: "#ccc"
-})
-
-export const cellStyle1 = Object.assign({}, cellStyleDefault, {
-    color: "blue",
-    backgroundColor: "#ccc"
-})
-
-export const cellStyle2 = Object.assign({}, cellStyleDefault, {
-    color: "green",
-    backgroundColor: "#ccc"
-})
-
-export const cellStyle3 = Object.assign({}, cellStyleDefault, {
-    color: "red",
-    backgroundColor: "#ccc"
-})
-
-export const cellStyle4 = Object.assign({}, cellStyleDefault, {
-    color: "purple",
-    backgroundColor: "#ccc"
-})
-
-export const cellStyle5 = Object.assign({}, cellStyleDefault, {
-    color: "maroon",
-    backgroundColor: "#ccc"
-})
-
-export const cellStyle6 = Object.assign({}, cellStyleDefault, {
-    color: "turqoise",
-    backgroundColor: "#ccc"
-})
-
-export const cellStyle7 = Object.assign({}, cellStyleDefault, {
-    color: "black",
-    backgroundColor: "#ccc"
-})
-
-export const cellStyle8 = Object.assign({}, cellStyleDefault, {
-    color: "gray",
-    backgroundColor: "#ccc"
-})
-
-export const cs = {
-    cellStyleDefault, cellStyleMine, cellStyle0, cellStyle1, cellStyle2, cellStyle3,
-    cellStyle4, cellStyle5, cellStyle6, cellStyle7, cellStyle8
-}
-
-
 @Injectable({
     providedIn: 'root'
 })
@@ -182,36 +114,6 @@ export class MinesweeperService {
         }
         let adjectantCells = this.getAdjectantCells(cells, width)
         return adjectantCells
-    }
-
-    getCellStyle = (revealed: boolean, isMine: boolean, adjMines: number) => {
-
-        if (!revealed) {
-            return cs.cellStyleDefault
-        }
-        if (isMine) {
-            return cs.cellStyleMine
-        }
-        switch (adjMines) {
-            case 1:
-                return cs.cellStyle1
-            case 2:
-                return cs.cellStyle2
-            case 3:
-                return cs.cellStyle3
-            case 4:
-                return cs.cellStyle4
-            case 5:
-                return cs.cellStyle5
-            case 6:
-                return cs.cellStyle6
-            case 7:
-                return cs.cellStyle7
-            case 8:
-                return cs.cellStyle8
-            default:
-                return cs.cellStyle0
-        }
     }
 
     handleToggleCell = (cell, done, field) => {

@@ -54,6 +54,10 @@ export class MinesweeperPage implements OnInit {
         this._field = this.msService.createField(this._height, this._width, this._mines)
     }
 
+    getMaxMines() {
+        return this._height * this._width
+    }
+
     getStyle(cell) {
         const adjMines = cell.neighbours.filter(cell => cell.mine == true).length
         //const style = getCellStyle(cell.toggled, cell.mine, adjMines)
@@ -91,10 +95,7 @@ export class MinesweeperPage implements OnInit {
 
     handleToggleCell(cell: object, done: [], field: any[]) {
         const foo = this.msService.handleToggleCell(cell, done, field)
-        //const toggledCells = this.msService.handleToggleCell(cell, done)
-        //toggledCells.forEach(cell => this._field[cell.index] = cell)
-        console.log({foo})
-        console.log({field})
         this._field = foo
     }
+
 }

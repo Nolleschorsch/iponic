@@ -1,15 +1,36 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>minesweeper</ion-title>
-  </ion-toolbar>
+    <ion-toolbar>
+        <ion-title>minesweeper</ion-title>
+    </ion-toolbar>
 </ion-header>
 
 <ion-content>
-        <h5>blyat</h5>
-        <ion-button (click)="newGame()">New Game</ion-button>
+    <div class="center">
+        <ion-row>
+            <ion-col>
+                <ion-button (click)="newGame()">New Game</ion-button>
+            </ion-col>
+            <ion-col>
+                <ion-label>Width: </ion-label>
+                <ion-input type="number" min="3" max="15" [(ngModel)]="width"></ion-input>
+            </ion-col>
+            <ion-col>
+                <ion-label>Height: </ion-label>
+                <ion-input type="number" min="3" max="15" [(ngModel)]="height"></ion-input>
+            </ion-col>
+            <ion-col>
+                <ion-label>Mines: </ion-label>
+                <ion-input type="number" min="1" max="{{getMaxMines()}}" [(ngModel)]="mines"></ion-input>
+            </ion-col>
+        </ion-row>
+
+
+
+
         <div *ngFor="let row of field" [ngClass]="fieldRow">
             <!-- <div *ngFor="let cell of row" [ngClass]="{'cellStyleDefault': true}"  (click)="handleToggleCell(cell, [])">{{cell.mine ? "X" : "?"}}</div> -->
-            <div *ngFor="let cell of row" [ngClass]="getStyle(cell)"  (click)="handleToggleCell(cell, [], field)">{{cell.mine ? "X" : getAdjMines(cell)}}</div>
+            <div *ngFor="let cell of row" [ngClass]="getStyle(cell)" (click)="handleToggleCell(cell, [], field)">
+                {{cell.mine ? "X" : getAdjMines(cell)}}</div>
         </div>
-
+    </div>
 </ion-content>
