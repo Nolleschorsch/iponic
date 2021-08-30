@@ -12,7 +12,8 @@ export class MinesweeperPage implements OnInit {
     private _height: number = 10
     private _width: number = 10
     private _mines: number = 10
-    private _field: object
+    private _field: any[]
+    public fieldRow: string
 
     constructor(private msService: MinesweeperService) { }
 
@@ -45,7 +46,7 @@ export class MinesweeperPage implements OnInit {
         this._mines = mines
     }
 
-    get field(): object {
+    get field(): any[] {
         return this._field
     }
 
@@ -88,7 +89,7 @@ export class MinesweeperPage implements OnInit {
         return cell.neighbours.filter(cell => cell.mine == true).length
     }
 
-    handleToggleCell(cell: object, done: [], field: object) {
+    handleToggleCell(cell: object, done: [], field: any[]) {
         const foo = this.msService.handleToggleCell(cell, done, field)
         //const toggledCells = this.msService.handleToggleCell(cell, done)
         //toggledCells.forEach(cell => this._field[cell.index] = cell)
