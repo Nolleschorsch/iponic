@@ -1,0 +1,67 @@
+.fieldRow {
+    display: table;
+}
+
+.cell {
+    width: 50px;
+    height: 50px;
+    border: solid black 1px;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.cellStyleDefault {
+    background-color: #aaa;
+    color: #aaa;
+    font-weight: bold;
+}
+  
+.cellStyleMine {
+    background-color: red;
+}
+  
+.cellStyle0 {
+    color: #ccc;
+    background-color: #ccc;
+}
+  
+.cellStyle1 {
+    color: blue;
+    background-color: #ccc;
+}
+  
+.cellStyle2 {
+    color: green;
+    background-color: #ccc;
+}
+  
+.cellStyle3 {
+    color: red;
+    background-color: #ccc;
+}
+  
+.cellStyle4 {
+    color: purple;
+    background-color: #ccc;
+}
+  
+.cellStyle5 {
+    color: maroon;
+    background-color: #ccc;
+}
+
+.cellStyle6 {
+    color: turqoise;
+    background-color: #ccc;
+}
+  
+.cellStyle7 {
+    color: black;
+    background-color: #ccc;
+}
+  
+.cellStyle8 {
+    color: gray;
+    background-color: #ccc;
+}
